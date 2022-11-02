@@ -78,11 +78,63 @@ public class StringParser {
     //parse a string using the pattern, and return the capture groups
     //if it does not match, return null
     public ArrayList<String> parse(String input){
-        //
+        ArrayList<String> captures = new ArrayList<>();
 
-        for (Instruction instruction : instructions) {
+        //keep current character in characters to match
+        int match_id = 0;
+        String capture_so_far = ""; //data for recent capture group
+        int current_char_id = 0;  //current char in input id
+        for (int i = 0; i < instructions.size(); i++) {
+            Instruction instruction = instructions.get(i);
+            char current = input.substring(current_char_id, current_char_id+1).toCharArray()[0]; //get current input char
+            switch (instruction){
+                case NUMERIC:
+                    if(Character.isDigit(current)){
+                        capture_so_far += current;
+                        current_char_id++;
+                        break;
+                    }
+                        return null;
+                case WORD:
+                    if(Character.isAlphabetic(current)){
+                        capture_so_far += current;
+                        current_char_id++;
+                        break;
+                    }
+                    return null;
+                case WHITESPACE:
+                    if(Character.isWhitespace(current)){
+                        capture_so_far += current;
+                        current_char_id++;
+                        break;
+                    }
+                    return null;
+                case NEXT_CHAR:
+                    if(current == characters.get(match_id).charAt(0)){
+                        capture_so_far += current;
+                        current_char_id++;
+                        match_id++;
+                        break;
+                    }
+                    return null;
+                case ANY:
+                        capture_so_far += current;
+                        current_char_id++;
+                        break;
+                case OPEN_CAPTURE:
+                    capture_so_far = "";
+                case CLOSE_CAPTURE:
+                    captures.add(capture_so_far);
+                case REPEAT:
+                    //if next does not match
+                    if(true){
+                        i--;
+                    }
+                    break;
+            }
 
         }
+        return captures;
     }
 
 
