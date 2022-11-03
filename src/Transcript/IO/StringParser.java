@@ -13,51 +13,68 @@ public class StringParser {
         ANY, //any character
         REPEAT, //repeat until other type
         OPEN_CAPTURE, //open a capture group
-        CLOSE_CAPTURE //close a capture group
+        CLOSE_CAPTURE, //close a capture group
+        OPTIONAL //make last command optional
     }
 
     //create a string parser, to match a pattern to a string
-    //will only match once
+    //will only match once. Matches beginning of string, ignores additional characters after pattern is matched.
+    //backslash instructions to treat them as characters
+    //make sure to escape your escape backslash for java. Example: \\+
     //syntax:
     /*
     normal character = match that character
-    \w = any word character
-    \n = any number chracter
-    \s =  any space
-    \* = anything
-    \+ = repeat last until other is encountered
-    \(anything\) = capture groups
+    & = any word character
+    # = any number character
+    ^ =  any space
+    * = anything
+    + = repeat last until other is encountered
+    ~ make last command optional
+    (something) = capture groups
+    / = escape an instruction to treat it like a normal character
      */
-    public  StringParser( String pattern) throws IllegalArgumentException {
+    //email parsing example:  berp123@gmail.com into the pattern "^+~(&+#+)@(&+.&+)^+" outputs [berp123, gmail.com]
+    public  StringParser( String pattern) {
         characters = new ArrayList<>();
         instructions = new ArrayList<>();
         //parse pattern
-        for (int i = 1; i < pattern.length(); i++) {
+        for (int i = 0; i < pattern.length(); i++) {
             String current = pattern.substring(i, i+1); //ap complaint code
-            String last = pattern.substring(i-1, i);;
+            String last = " ";
+            if(i > 0){
+                last = pattern.substring(i-1, i); //get last character
+            }
+
             if(current.equals("\\")){
-                //is a command, move on to next char to find command type
+                //is an escape, move on to find what it is
                 continue;
             }else if(last.equals("\\")){
-                //a command, add it
-                instructions.add(getInstruction(current));
+                characters.add(current); //add escaped character
+                instructions.add(Instruction.NEXT_CHAR); //add character instruction
             }else{
-                // a normal character
-                instructions.add(Instruction.NEXT_CHAR); //add instruction
-                characters.add(current); //add character to match
+                // is it a command?
+                Instruction instruction = getInstruction(current);
+                if(instruction != null){
+                    //it is an instruction, add it
+                    instructions.add(instruction);
+                }else {
+                    //not an instruction, it is a character
+                    instructions.add(Instruction.NEXT_CHAR); //add character instruction
+                    characters.add(current); //add character to match
+                }
             }
 
         }
 
     }
 
-    private static Instruction getInstruction(String character) throws IllegalArgumentException {
+    private static Instruction getInstruction(String character) {
         switch (character){
-            case "w":
+            case "&":
                 return Instruction.WORD;
-            case "n":
+            case "#":
                 return Instruction.NUMERIC;
-            case "s":
+            case "^":
                 return Instruction.WHITESPACE;
             case "*":
                 return Instruction.ANY;
@@ -67,9 +84,11 @@ public class StringParser {
                 return Instruction.OPEN_CAPTURE;
             case ")":
                 return Instruction.CLOSE_CAPTURE;
+            case "~":
+                return Instruction.OPTIONAL;
 
         }
-        throw new IllegalArgumentException("Unknown instruction: " +character);
+       return null;
     }
 
     private ArrayList<Instruction> instructions; //actual program/pattern
@@ -80,63 +99,126 @@ public class StringParser {
     public ArrayList<String> parse(String input){
         ArrayList<String> captures = new ArrayList<>();
 
-        //keep current character in characters to match
-        int match_id = 0;
+        int match_id = 0;   //keep track current character in characters to match
         String capture_so_far = ""; //data for recent capture group
-        int current_char_id = 0;  //current char in input id
+        int current_char_id = 0;  //index of current char in input
+
+        //iterate through instructions
         for (int i = 0; i < instructions.size(); i++) {
-            Instruction instruction = instructions.get(i);
-            char current = input.substring(current_char_id, current_char_id+1).toCharArray()[0]; //get current input char
-            switch (instruction){
-                case NUMERIC:
-                    if(Character.isDigit(current)){
-                        capture_so_far += current;
-                        current_char_id++;
-                        break;
-                    }
-                        return null;
-                case WORD:
-                    if(Character.isAlphabetic(current)){
-                        capture_so_far += current;
-                        current_char_id++;
-                        break;
-                    }
-                    return null;
-                case WHITESPACE:
-                    if(Character.isWhitespace(current)){
-                        capture_so_far += current;
-                        current_char_id++;
-                        break;
-                    }
-                    return null;
-                case NEXT_CHAR:
-                    if(current == characters.get(match_id).charAt(0)){
-                        capture_so_far += current;
-                        current_char_id++;
-                        match_id++;
-                        break;
-                    }
-                    return null;
-                case ANY:
-                        capture_so_far += current;
-                        current_char_id++;
-                        break;
-                case OPEN_CAPTURE:
-                    capture_so_far = "";
-                case CLOSE_CAPTURE:
-                    captures.add(capture_so_far);
-                case REPEAT:
-                    //if next does not match
-                    if(true){
-                        i--;
-                    }
-                    break;
+            Instruction instruction = instructions.get(i); //get instruction
+
+
+
+            //get character to match, if exists
+            char to_match = ' ';
+            if(match_id < characters.size()){
+                to_match = characters.get(match_id).charAt(0);
             }
+            char current = 0x03;//end of file
+            if(current_char_id < input.length()){ //is not end
+                current = input.substring(current_char_id, current_char_id+1).toCharArray()[0]; //get current input char
+            }
+
+            //special instructions
+            if(instruction.equals(Instruction.OPTIONAL)){
+                continue;
+            }
+            if(instruction.equals(Instruction.OPEN_CAPTURE)){
+                capture_so_far = ""; //new capture group, clear whatever is there
+                continue;
+            }
+            if(instruction.equals( Instruction.CLOSE_CAPTURE)){
+                captures.add(capture_so_far); //finished capture group, add
+                continue;
+            }
+            if(instruction.equals( Instruction.REPEAT)){
+                Instruction next_instruction = getNextMatchableInstruction(i);//get the next instruction to match
+                //if the next instruction exists, and it does not match, and the last instruction does match
+                if( current_char_id < input.length() && !matches(current,next_instruction,to_match) && matches(current,instructions.get(i-1),to_match)){
+                    i-=2; //repeat last instruction
+                }
+                continue;
+            }
+
+
+            if(matches(current,instruction,to_match)){ //check for match
+                capture_so_far += current; //add to capture
+                current_char_id++;  //move onto next input
+                if(instruction.equals(Instruction.NEXT_CHAR)){
+                    match_id++; //match next character next time
+                }
+                continue;
+            }
+
+            //does not match anything
+            if(!hasOptional(i)){
+                return null;//not optional
+            }
+
 
         }
         return captures;
     }
 
+    //check if a character matches a certian instruction. Also provide next char in matching data.
+    private boolean matches(char character, Instruction instruction, char next_match_char){
+        if(instruction == null){
+            return false;
+        }
+
+        switch (instruction){
+            case NUMERIC:
+                return Character.isDigit(character);
+            case WORD:
+                return Character.isAlphabetic(character);
+            case WHITESPACE:
+                return Character.isWhitespace(character);
+            case NEXT_CHAR:
+               return character == next_match_char;
+            case ANY:
+                return true;
+        }
+        return false;
+    }
+
+    //check if an instruction is special(non-matchable)
+    private static boolean isSpecial(Instruction instruction){
+         final Instruction[] special_instructions = {Instruction.WHITESPACE, Instruction.OPEN_CAPTURE, Instruction.CLOSE_CAPTURE, Instruction.REPEAT, Instruction.OPTIONAL};//all non-matchable instructions
+        for (Instruction special : special_instructions) {
+            if(instruction.equals(special)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //get the next non-special instruction.
+    //return null if none found
+    private Instruction getNextMatchableInstruction(int current){
+        for (int i = current + 1; i < instructions.size(); i++) {
+            Instruction instruction = instructions.get(i);
+            //check if it does not match special types
+            if(!isSpecial(instruction)){
+                return instruction;
+            }
+        }
+        return null; //none found
+    }
+
+    //check if there is an optional following the current instruction that corresponds to it
+    private boolean hasOptional(int current){
+        for (int i = current + 1; i < instructions.size(); i++) { //for the following instructions
+            Instruction instruction = instructions.get(i);
+            if(!isSpecial(instruction)){
+                return false; //there is a matchable instruction before, so there is no corresponding optional
+            }
+            if(instruction.equals(Instruction.OPTIONAL)){
+                return true; //optional found
+            }
+
+        }
+        return false; //no optional found
+    }
 
 
 }
