@@ -33,7 +33,7 @@ public class StringParser {
     (something) = capture groups
     / = escape an instruction to treat it like a normal character
      */
-    //email parsing example:  berp123@gmail.com into the pattern "^+~(&+#+)@(&+.&+)^+" outputs [berp123, gmail.com]
+    //email parsing example:  "  berp123@gmail.com "  into the pattern "^+~(&+#+)@(&+.&+)^+" outputs [berp123, gmail.com]
     public  StringParser( String pattern) {
         characters = new ArrayList<>();
         instructions = new ArrayList<>();
@@ -91,8 +91,8 @@ public class StringParser {
        return null;
     }
 
-    private ArrayList<Instruction> instructions; //actual program/pattern
-    private ArrayList<String> characters; //characters to specifically match
+    final private ArrayList<Instruction> instructions; //actual program/pattern
+    final private ArrayList<String> characters; //characters to specifically match
 
     //parse a string using the pattern, and return the capture groups
     //if it does not match, return null
@@ -160,7 +160,7 @@ public class StringParser {
         return captures;
     }
 
-    //check if a character matches a certian instruction. Also provide next char in matching data.
+    //check if a character matches a certain instruction. Also provide next char in matching data.
     private boolean matches(char character, Instruction instruction, char next_match_char){
         if(instruction == null){
             return false;
@@ -182,7 +182,7 @@ public class StringParser {
     }
 
     //check if an instruction is special(non-matchable)
-    private static boolean isSpecial(Instruction instruction){
+    private static boolean isMatchable(Instruction instruction){
          final Instruction[] special_instructions = {Instruction.WHITESPACE, Instruction.OPEN_CAPTURE, Instruction.CLOSE_CAPTURE, Instruction.REPEAT, Instruction.OPTIONAL};//all non-matchable instructions
         for (Instruction special : special_instructions) {
             if(instruction.equals(special)){
@@ -198,7 +198,7 @@ public class StringParser {
         for (int i = current + 1; i < instructions.size(); i++) {
             Instruction instruction = instructions.get(i);
             //check if it does not match special types
-            if(!isSpecial(instruction)){
+            if(isMatchable(instruction)){
                 return instruction;
             }
         }
@@ -209,7 +209,7 @@ public class StringParser {
     private boolean hasOptional(int current){
         for (int i = current + 1; i < instructions.size(); i++) { //for the following instructions
             Instruction instruction = instructions.get(i);
-            if(!isSpecial(instruction)){
+            if(isMatchable(instruction)){
                 return false; //there is a matchable instruction before, so there is no corresponding optional
             }
             if(instruction.equals(Instruction.OPTIONAL)){
