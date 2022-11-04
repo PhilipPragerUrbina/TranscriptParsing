@@ -17,8 +17,12 @@ public class StringParser {
         OPTIONAL //make last command optional
     }
 
+    final private ArrayList<Instruction> instructions; //actual program/pattern
+    final private ArrayList<String> characters; //characters to specifically match
+    int num_captures = 0; //number of capture groups
+
     //create a string parser, to match a pattern to a string
-    //will only match once. Matches beginning of string, ignores additional characters after pattern is matched.
+    //will only match once.
     //backslash instructions to treat them as characters
     //make sure to escape your escape backslash for java. Example: \\+
     //syntax:
@@ -68,7 +72,7 @@ public class StringParser {
 
     }
 
-    private static Instruction getInstruction(String character) {
+    private Instruction getInstruction(String character) {
         switch (character){
             case "&":
                 return Instruction.WORD;
@@ -83,6 +87,7 @@ public class StringParser {
             case "(":
                 return Instruction.OPEN_CAPTURE;
             case ")":
+                num_captures++;
                 return Instruction.CLOSE_CAPTURE;
             case "~":
                 return Instruction.OPTIONAL;
@@ -91,32 +96,30 @@ public class StringParser {
        return null;
     }
 
-    final private ArrayList<Instruction> instructions; //actual program/pattern
-    final private ArrayList<String> characters; //characters to specifically match
+    //get the number of capture groups
+    public int getNumCaptures() {
+        return num_captures;
+    }
 
     //parse a string using the pattern, and return the capture groups
     //if it does not match, return null
     public ArrayList<String> parse(String input){
         ArrayList<String> captures = new ArrayList<>();
 
-        int match_id = 0;   //keep track current character in characters to match
+        int match_idx = 0;   //keep track current character in characters to match
+        int input_idx = 0;  //index of current char in input
         String capture_so_far = ""; //data for recent capture group
-        int current_char_id = 0;  //index of current char in input
-
         //iterate through instructions
         for (int i = 0; i < instructions.size(); i++) {
             Instruction instruction = instructions.get(i); //get instruction
-
-
-
             //get character to match, if exists
             char to_match = ' ';
-            if(match_id < characters.size()){
-                to_match = characters.get(match_id).charAt(0);
+            if(match_idx < characters.size()){
+                to_match = characters.get(match_idx).charAt(0);
             }
             char current = 0x03;//end of file
-            if(current_char_id < input.length()){ //is not end
-                current = input.substring(current_char_id, current_char_id+1).toCharArray()[0]; //get current input char
+            if(input_idx < input.length()){ //is not end
+                current = input.substring(input_idx, input_idx+1).toCharArray()[0]; //get current input char
             }
 
             //special instructions
@@ -134,7 +137,7 @@ public class StringParser {
             if(instruction.equals( Instruction.REPEAT)){
                 Instruction next_instruction = getNextMatchableInstruction(i);//get the next instruction to match
                 //if the next instruction exists, and it does not match, and the last instruction does match
-                if( current_char_id < input.length() && !matches(current,next_instruction,to_match) && matches(current,instructions.get(i-1),to_match)){
+                if( input_idx < input.length() && !matches(current,next_instruction,to_match) && matches(current,instructions.get(i-1),to_match)){
                     i-=2; //repeat last instruction
                 }
                 continue;
@@ -143,9 +146,9 @@ public class StringParser {
 
             if(matches(current,instruction,to_match)){ //check for match
                 capture_so_far += current; //add to capture
-                current_char_id++;  //move onto next input
+                input_idx++;  //move onto next input
                 if(instruction.equals(Instruction.NEXT_CHAR)){
-                    match_id++; //match next character next time
+                    match_idx++; //match next character next time
                 }
                 continue;
             }
@@ -154,8 +157,9 @@ public class StringParser {
             if(!hasOptional(i)){
                 return null;//not optional
             }
-
-
+        }
+        if(input_idx != input.length()){
+           return null; //extra stuff left over in the input, does not match
         }
         return captures;
     }
@@ -186,10 +190,10 @@ public class StringParser {
          final Instruction[] special_instructions = {Instruction.WHITESPACE, Instruction.OPEN_CAPTURE, Instruction.CLOSE_CAPTURE, Instruction.REPEAT, Instruction.OPTIONAL};//all non-matchable instructions
         for (Instruction special : special_instructions) {
             if(instruction.equals(special)){
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     //get the next non-special instruction.
