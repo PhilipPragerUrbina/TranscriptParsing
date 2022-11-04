@@ -24,10 +24,9 @@ public class Time {
 
     //create time from seconds
     public Time(double seconds){
-        //todo fix
-        this.hours =(int)( seconds / 60.0 * 60.0); //get hours
-        this.minutes = (int) (seconds / 60) - hours * 60; //get minutes, and subtract hours
-        this.seconds = seconds - minutes * 60 - hours*60*60; //get remaining seconds
+        this.hours =(int)( seconds / (60.0 * 60.0)); //get hours
+        this.minutes = (int) (seconds / 60.0 - (double)hours * 60.0); //get minutes, and subtract hours
+        this.seconds = seconds - (double)minutes * 60.0 - (double)hours*6.00*60.0; //get remaining seconds
     }
 
     final static StringParser time_pattern = new StringParser("^+~(#+):(#+):(#+.~#+)^+~");
@@ -48,6 +47,12 @@ public Time(String hms) throws ParseException {
     Time duration(Time other){
         double seconds_diff = Math.abs(other.toSeconds() - this.toSeconds()); //get seconds between
         return new Time(seconds_diff); //return new time
+    }
+
+    //add two timestamps
+    Time add(Time other){
+        double seconds_add = other.toSeconds() + this.toSeconds(); //get seconds added
+        return new Time(seconds_add); //return new time
     }
 
     //get length in seconds

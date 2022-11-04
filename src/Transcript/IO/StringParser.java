@@ -37,7 +37,7 @@ public class StringParser {
     (something) = capture groups
     / = escape an instruction to treat it like a normal character
      */
-    //email parsing example:  "  berp123@gmail.com "  into the pattern "^+~(&+#+)@(&+.&+)^+" outputs [berp123, gmail.com]
+    //email parsing example:  "  berp123@gmail.com "  into the pattern "^+~(&+#+)@(&+.&+)^+~" outputs [berp123, gmail.com]
     public  StringParser( String pattern) {
         characters = new ArrayList<>();
         instructions = new ArrayList<>();
@@ -158,7 +158,7 @@ public class StringParser {
                 return null;//not optional
             }
         }
-        if(input_idx != input.length()){
+        if(input_idx != input.length() || input.isEmpty()){
            return null; //extra stuff left over in the input, does not match
         }
         return captures;
