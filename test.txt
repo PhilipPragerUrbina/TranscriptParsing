@@ -2,7 +2,7 @@ Segment{index=1, name='Andrew Knight', text='Okay, so we're recording. We're str
 Segment{index=2, name='Andrew Knight', text='We have that setup. Okay.', start=0:0:9.54, end=0:0:12.99}
 Segment{index=3, name='Andrew Knight', text='It's like Mary Kate's here. I'll let her in.', start=0:0:15.63, end=0:0:17.76}
 Segment{index=4, name='Andrew Knight', text='Gonna make her a host to', start=0:0:19.98, end=0:0:21.24}
-Segment{index=5, name='Paul McCartney', text='She just got back from a vacation or something.', start=0:0:24.0, end=0:0:26.07}
+Segment{index=5, name='Paul McCartney', text='She just got back from a vacation or something.', start=0:0:24, end=0:0:26.07}
 Segment{index=6, name='George Harrison', text='Mary Kate.', start=0:0:27.33, end=0:0:27.87}
 Segment{index=7, name='George Harrison', text='I think she was on a vacation for a while.', start=0:0:28.56, end=0:0:31.11}
 Segment{index=8, name='Ringo Starr', text='Oh, nice. See how that one.', start=0:0:31.65, end=0:0:33.63}
@@ -113,7 +113,7 @@ Segment{index=114, name='Paul McCartney', text='The planes that returned home, o
 Segment{index=115, name='Paul McCartney', text='Right here. There's the cockpit. This is our engine when they got hit in the wings. They did their job. They made it back.', start=0:23:22.41, end=0:23:28.5}
 Segment{index=116, name='Paul McCartney', text='They were not hit in the cockpit or the engine, the planes that crashed abroad, when they were hit in the cockpit or engine. They couldn't make it back.', start=0:23:29.43, end=0:23:38.34}
 Segment{index=117, name='Paul McCartney', text='So, those who were looking at, or sometimes ones we can't even see and it gives us a whole nother answer of where we should be reinforcing the planes, so that both groups, both samples are able to make it back.', start=0:23:38.94, end=0:23:51.72}
-Segment{index=118, name='Paul McCartney', text='So this brings us to our second question we have our first have who is the data really about, who do we want to know this data about and next', start=0:23:54.0, end=0:24:1.95}
+Segment{index=118, name='Paul McCartney', text='So this brings us to our second question we have our first have who is the data really about, who do we want to know this data about and next', start=0:23:54, end=0:24:1.95}
 Segment{index=119, name='Paul McCartney', text='Is what exactly are we, why are we prone to making this type of mistake error. Very good question. Andrew', start=0:24:2.19, end=0:24:7.98}
 Segment{index=120, name='Paul McCartney', text='Part of what happens when we're trying to think about these things is we miss the simple answer right. Where's look so focused on looking at the data, the planes that made it back.', start=0:24:8.46, end=0:24:17.37}
 Segment{index=121, name='Paul McCartney', text='That we don't take a step back and say, Who is it that we really care about. We don't really care about the planes that made it back, right, because they made it back. They did their job.', start=0:24:17.64, end=0:24:26.4}
@@ -253,7 +253,7 @@ Segment{index=254, name='Paul McCartney', text='So how do we do that, I would sa
 Segment{index=255, name='Paul McCartney', text='They could have paid for diapers for a year for 30,000 babies or New Jersey could have bought baby food for a year for 40,000 babies or Ohio could have paid a year salary for 800 new child social care workers.', start=0:47:12.6, end=0:47:29.58}
 Segment{index=256, name='Paul McCartney', text='We need to turn these numbers into something that matters to people into something that people understand and personally matters to them.', start=0:47:29.88, end=0:47:39.18}
 Segment{index=257, name='Paul McCartney', text='And that brings me to our last example you know we've talked this whole time about negative things you know the right you know', start=0:47:40.11, end=0:47:46.86}
-Segment{index=258, name='Paul McCartney', text='About the, you know, all the manipulative things bad things sneaky things. But there's also incredible things that we can do. There's really incredible things we can do with actually making people care about the numbers.', start=0:47:47.13, end=0:48:0.0}
+Segment{index=258, name='Paul McCartney', text='About the, you know, all the manipulative things bad things sneaky things. But there's also incredible things that we can do. There's really incredible things we can do with actually making people care about the numbers.', start=0:47:47.13, end=0:48:0}
 Segment{index=259, name='Paul McCartney', text='Or in the most severe refugee crisis since world war two and it's only growing UNHCR, the UN Refugee agencies budget for 2016 was $8', start=0:48:0.81, end=0:48:9.24}
 Segment{index=260, name='Paul McCartney', text='Billion, but they only got 3 billion. That's $5 billion needed to help people. So what do they do they need to figure out a way to raise more money.', start=0:48:9.69, end=0:48:18.09}
 Segment{index=261, name='Paul McCartney', text='That is, but as what needs to be done for this refugee crisis. So how do they do it, and I'm going to show you a very disturbing image. Next, so please. Just be ready for that.', start=0:48:18.54, end=0:48:27.03}
@@ -293,7 +293,7 @@ Segment{index=294, name='Paul McCartney', text='Got to buy the book.', start=0:5
 Segment{index=295, name='Andrew Knight', text='gotta buy the', start=0:54:45.51, end=0:54:46.17}
 Segment{index=296, name='Paul McCartney', text='Book. I'm kidding, I'm kidding.', start=0:54:46.2, end=0:54:47.31}
 Segment{index=297, name='Paul McCartney', text='I actually deleted that example because I was running out of time. Get Away With Murder, you gotta go look at OJ it and it worked out. Sure. You really want to try that. But there's, there's a lot of questions about statistical change of samples.', start=0:54:48.9, end=0:55:2.1}
-Segment{index=298, name='Andrew Knight', text='Well, thank you again so much for taking time to share these thoughts with us. And folks, if you can go down to the bottom of your zoom window, you'll see a', start=0:55:3.36, end=0:55:12.0}
+Segment{index=298, name='Andrew Knight', text='Well, thank you again so much for taking time to share these thoughts with us. And folks, if you can go down to the bottom of your zoom window, you'll see a', start=0:55:3.36, end=0:55:12}
 Segment{index=299, name='Andrew Knight', text='button that says reactions. And so if you'd click that reactions button and let's give liberty, a virtual you know Round of applause for sharing her expertise with us.', start=0:55:12.48, end=0:55:25.38}
 Segment{index=300, name='Andrew Knight', text='Certainly, if you are in person ensure we have here rockets. APPLAUSE So thank you so much everyone, hope you have a wonderful rest of your day and 15 minutes if this is your lunch hour to squeeze out and grab something to eat. So thanks everyone. See you in our next program.', start=0:55:26.82, end=0:55:41.97}
 

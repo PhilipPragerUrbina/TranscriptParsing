@@ -24,6 +24,7 @@ public class Transcript {
                index++;
            }
        }
+       calculatePeople(); //calculate thr values for the people
     }
 
     //get information about participants
@@ -32,10 +33,51 @@ public class Transcript {
             String name = segment.getName(); //get the persons name
             if (people.containsKey(name)) {
                 people.get(name).addSegment(segment); //exists update record
+
             }else{
                 people.put(name, new Person(name)); //does not exist create new record
+                people.get(name).addSegment(segment); //update record
             }
         }
+    }
+
+    public ArrayList<Person> getPeople(){
+        ArrayList<Person> out = new ArrayList<Person>();
+        for (Person person: people.values()) {
+            out.add(person);
+        }
+        return out;
+    }
+
+    //get start timestamp
+    public Time getStart(){
+        if(data.size() > 0){
+            return data.get(0).getStart();
+        }
+        return new Time(0);
+    }
+    public Time getEnd(){
+        if(data.size() > 0) {
+            return data.get(data.size()-1).getEnd();
+        }
+        return new Time(0);
+    }
+
+    //get number of times the speaker switches
+    public int getSpeakerSwitches(){
+        int switches = 0;
+        String last_name = "";
+        for (Segment segment: data) {
+            if(!last_name.equals(segment.getName())){
+                last_name = segment.getName();
+                switches++;
+            }
+        }
+        return switches;
+    }
+
+    public ArrayList<Segment> getData(){
+        return data;
     }
 
     //get a line by line overview of each segment

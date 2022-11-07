@@ -3,6 +3,7 @@ package Transcript;
 import Transcript.IO.StringParser;
 
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 
@@ -55,6 +56,12 @@ public Time(String hms) throws ParseException {
         return new Time(seconds_add); //return new time
     }
 
+    //divide the time by an amount
+    Time divide(double amount){
+        double seconds_divided = this.toSeconds() / amount; //get seconds divided by factor
+        return new Time(seconds_divided); //return new time
+    }
+
     //get length in seconds
     double toSeconds(){
     double total_seconds = seconds;
@@ -68,8 +75,9 @@ public Time(String hms) throws ParseException {
         return toSeconds()/60.0;
     }
 
+    final static DecimalFormat format = new DecimalFormat("#.###"); //format time to realistic precision when printing(3 decimal places)
     @Override
     public String toString() {
-        return hours + ":" + minutes + ":" + seconds;
+    return hours + ":" + minutes + ":" + format.format(seconds);
     }
 }

@@ -47,5 +47,10 @@ public class Person {
     }
 
 
-
+    @Override
+    public String toString() {
+        return  name + "{ talk time=" + talk_time +
+                ", num=" + num_segments +
+                "} " ;
+    }
 }
