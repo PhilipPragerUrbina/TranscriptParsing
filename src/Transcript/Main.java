@@ -2,6 +2,7 @@ package Transcript;
 
 import Transcript.IO.ReadFile;
 import Transcript.IO.StringParser;
+import Transcript.IO.WriteFile;
 
 import java.text.ParseException;
 import java.util.IllegalFormatException;
@@ -14,7 +15,8 @@ public class Main {
 
 
         Transcript t = new Transcript(f.getLines());
-        t.printData();
-
+        WriteFile w  = new WriteFile("test.txt");
+        w.writeLine(t.toString());
+         w.close();
     }
 }
