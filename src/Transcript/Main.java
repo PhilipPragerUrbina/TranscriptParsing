@@ -54,6 +54,15 @@ public class Main {
         for (Person person : people) {
             summary.writeLine(person.getName() + ": " +  person.getTalkTime().divide(person.getNumSegments())); //output total time / number times they spoke
         }
+        summary.writeLine(""); //spacing
+
+        //output words per minute of each person
+        summary.writeLine("Words per Minute");
+        for (Person person : people) {
+            summary.writeLine(person.getName() + ": " + (int)(person.getText().split("\\s+").length / person.getTalkTime().toMinutes()) + " WPM"); //split spoken text into words and divide by minutes
+        }
+
+
         summary.close(); //save file
     }
 
